@@ -61,7 +61,7 @@ Our development roadmap includes the following upcoming features and improvement
 - Timer functionality for tracking solving time.
 - Leaderboard for high scores.
 - Mobile responsiveness for on-the-go gameplay.
-
+- Beautify everything
 
 
 __Happy Sudoku solving!__

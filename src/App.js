@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function HintButton({noOfHints, setNoOfHints}){
 
-  return <button onClick={setNoOfHints}>Hint:{noOfHints}</button>
+  return <button className = "hint-button" onClick={setNoOfHints}>Hint:{noOfHints}</button>
 }
 
 function Square({ value, setValue }) {
@@ -19,7 +19,7 @@ function Square({ value, setValue }) {
   }
 
   return (
-    <button className="sudoku-cell" onClick={handleClick}>
+    <button className="square" onClick={handleClick}>
       {value}
     </button>
   );
@@ -40,9 +40,9 @@ function InvalidSquare({ value, setValue }) {
 
   return (
     <button
-      className="sudoku-cell"
+      className="square"
       onClick={handleClick}
-      style={{ "backgroundColor": "#ba7575" }}
+      style={{ "backgroundColor": 'rgba(252, 0, 0, 0.3)' }}
     >
       {value}
     </button>
@@ -51,7 +51,7 @@ function InvalidSquare({ value, setValue }) {
 
 function FixedSquare({ value }) {
   return (
-    <button className="square" style={{ color: "red" }} disabled={true}>
+    <button className="square" style={{ color: "red" , fontWeight:"bold", fontSize:"23px"}} disabled={true}>
       {value}
     </button>
   );
@@ -139,23 +139,24 @@ export default function Game() {
     }
   }
 
-  return (
-    <div>
-      {won ? (
-        <p>won</p>
-      ) : (
-        <div>
-          <Board
-            board={board}
-            setBoard={updateBoard}
-            initialBoard={initialSudokuBoard}
-            invalidCellMatrix={hintUsed? invalidCells : Array.from({ length: 9 }, () => Array(9).fill(0))}
-          />
-          <HintButton noOfHints={hints} setNoOfHints={updateHints}/>
-        </div>
-      )}
-    </div>
-  );
+  if(won){
+    return(<p>won</p>)
+  }
+  else{
+    return (
+          <div className="game">
+            <HintButton noOfHints={hints} setNoOfHints={updateHints}/>
+            <Board
+              board={board}
+              setBoard={updateBoard}
+              initialBoard={initialSudokuBoard}
+              invalidCellMatrix={hintUsed? invalidCells : Array.from({ length: 9 }, () => Array(9).fill(0))}
+            />
+          </div>
+          )
+          
+  }
+
 }
 
 function hasNulls(array) {
