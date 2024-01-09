@@ -55,7 +55,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 ## Roadmap
 Our development roadmap includes the following upcoming features and improvements:
 
-- Add Hint Button
+- Add Hint Button ✅
 - Dynamic Board Generation
 - Difficulty levels for Sudoku puzzles.
 - Timer functionality for tracking solving time.
