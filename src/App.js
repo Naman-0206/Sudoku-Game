@@ -1,5 +1,10 @@
 import { useState } from "react";
 
+function HintButton({noOfHints, setNoOfHints}){
+
+  return <button onClick={setNoOfHints}>Hint:{noOfHints}</button>
+}
+
 function Square({ value, setValue }) {
   function handleClick() {
     let v = value;
@@ -37,7 +42,7 @@ function InvalidSquare({ value, setValue }) {
     <button
       className="sudoku-cell"
       onClick={handleClick}
-      style={{ "background-color": "#ba7575" }}
+      style={{ "backgroundColor": "#ba7575" }}
     >
       {value}
     </button>
@@ -101,38 +106,53 @@ function Board({ board, setBoard, initialBoard, invalidCellMatrix }) {
   return <div className="sudoku-board">{dispBoard}</div>;
 }
 
-// let invalidCells = Array.from({ length: 9 }, () => Array(9).fill(0));
+let invalidCells = Array.from({ length: 9 }, () => Array(9).fill(0));
 
 export default function Game() {
   const [initialSudokuBoard, solvedSudokuBoard] = getSudoku();
 
   const [board, setBoard] = useState(initialSudokuBoard);
   const [won, setWon] = useState(false);
+  const [hints, setHints] = useState(5);
+  const [hintUsed, setHintUsed] = useState(false);
 
   function updateBoard(board) {
-    // if (!isValidSudoku(board)) {
-    //   invalidCells = getInvalidCellMatrix(board, solvedSudokuBoard);
-    //   // console.log("sudoku is invalid.", invalidCells);
-    // } else {
-    //   if (!hasNulls(board)) {
-    //     // console.log("You Won");
-    //     setWon(true);
-    //   }
-    // }
+    
+    if (isValidSudoku(board) && !hasNulls(board)) {
+      setWon(true);
+    }
+    
     setBoard(board);
+    setHintUsed(false)
   }
-  // console.log("sadfasd", invalidCells);
+
+  function updateHints(hint){
+    if(!hints){
+      console.log("No hints left")
+    }
+    else{
+      setHintUsed(true);
+      invalidCells = getInvalidCellMatrix(board, solvedSudokuBoard)
+      setHints(hints-1)
+      setBoard(board)
+      console.log(invalidCells)
+    }
+  }
+
   return (
     <div>
       {won ? (
         <p>won</p>
       ) : (
-        <Board
-          board={board}
-          setBoard={updateBoard}
-          initialBoard={initialSudokuBoard}
-          invalidCellMatrix={Array.from({ length: 9 }, () => Array(9).fill(0))}
-        />
+        <div>
+          <Board
+            board={board}
+            setBoard={updateBoard}
+            initialBoard={initialSudokuBoard}
+            invalidCellMatrix={hintUsed? invalidCells : Array.from({ length: 9 }, () => Array(9).fill(0))}
+          />
+          <HintButton noOfHints={hints} setNoOfHints={updateHints}/>
+        </div>
       )}
     </div>
   );
@@ -194,6 +214,17 @@ function getSudoku() {
     [5, 3, 4, 6, 7, 8, 9, 1, 2],
     [6, 7, 2, 1, 9, 5, 3, 4, 8],
     [1, 9, 8, 3, 4, 2, 5, 6, 7],
+    [8, 5, 9, 7, 6, 1, 4, 2, 3],
+    [4, 2, 6, 8, 5, 3, 7, 9, 1],
+    [7, 1, 3, 9, 2, 4, 8, 5, 6],
+    [9, 6, 1, 5, 3, 7, 2, 8, 4],
+    [2, 8, 7, 4, 1, 9, 6, 3, 5],
+    [3, 4, 5, 2, 8, 6, 1, 7, 9],
+  ];
+  let pSolvedSudokuBoard = [
+    [5, 3, 4, 6, 7, 8, 9, 1, 2],
+    [6, 7, 2, 1, 9, 5, 3, 4, 8],
+    [1, 9, 8, 3, null, 2, 5, 6, 7],
     [8, 5, 9, 7, 6, 1, 4, 2, 3],
     [4, 2, 6, 8, 5, 3, 7, 9, 1],
     [7, 1, 3, 9, 2, 4, 8, 5, 6],
