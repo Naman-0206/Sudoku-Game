@@ -12,11 +12,10 @@ Welcome to the Sudoku game project! This project is under development and aims t
 
 ## About
 
-Sudoku Game is a web-based application that allows users to play the classic Sudoku puzzle. It provides an interactive interface for users to fill in the numbers from 1 to 9 in a 9x9 grid, following the rules of Sudoku.
+Sudoku Game is a web-based application that allows users to play the classic Sudoku puzzle. Player have to fill in the numbers from 1 to 9 in a 9x9 grid, following the rules of Sudoku.
 
 ## Features
 
-- **Interactive Sudoku Board:** Play Sudoku with an easy-to-use and intuitive interface.
 - **Dynamic Board Generation:** Experience unique puzzles with dynamically generated boards.
 - **User Input Validation:** Ensure a valid Sudoku solution with real-time input validation.
 - **Under Development:** Ongoing development for additional features and improvements.
@@ -56,6 +55,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 ## Roadmap
 Our development roadmap includes the following upcoming features and improvements:
 
+- Add Hint Button
+- Dynamic Board Generation
 - Difficulty levels for Sudoku puzzles.
 - Timer functionality for tracking solving time.
 - Leaderboard for high scores.
