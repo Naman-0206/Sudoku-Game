@@ -1,8 +1,19 @@
 import { useState } from "react";
+import {
+  getSudoku,
+  getInvalidCellMatrix,
+  isValidSudoku,
+  hasNulls,
+} from "./tools";
 
-function HintButton({noOfHints, setNoOfHints}){
+const MAX_HINTS = 5;
 
-  return <button className = "hint-button" onClick={setNoOfHints}>Hint:{noOfHints}</button>
+function HintButton({ noOfHints, setNoOfHints }) {
+  return (
+    <button className="hint-button" onClick={setNoOfHints}>
+      Hint:{noOfHints}
+    </button>
+  );
 }
 
 function Square({ value, setValue }) {
@@ -15,7 +26,6 @@ function Square({ value, setValue }) {
       setValue((value % 9) + 1);
       v = (value % 9) + 1;
     }
-    // console.log("clicked, ", value, "->", v);
   }
 
   return (
@@ -35,14 +45,13 @@ function InvalidSquare({ value, setValue }) {
       setValue((value % 9) + 1);
       v = (value % 9) + 1;
     }
-    // console.log("clicked, ", value, "->", v);
   }
 
   return (
     <button
       className="square"
       onClick={handleClick}
-      style={{ "backgroundColor": 'rgba(252, 0, 0, 0.3)' }}
+      style={{ backgroundColor: "rgba(252, 0, 0, 0.3)" }}
     >
       {value}
     </button>
@@ -51,7 +60,11 @@ function InvalidSquare({ value, setValue }) {
 
 function FixedSquare({ value }) {
   return (
-    <button className="square" style={{ color: "red" , fontWeight:"bold", fontSize:"23px"}} disabled={true}>
+    <button
+      className="square"
+      style={{ color: "red", fontWeight: "bold", fontSize: "23px" }}
+      disabled={true}
+    >
       {value}
     </button>
   );
@@ -108,159 +121,112 @@ function Board({ board, setBoard, initialBoard, invalidCellMatrix }) {
 
 let invalidCells = Array.from({ length: 9 }, () => Array(9).fill(0));
 
-export default function Game() {
+function getNewGame() {
+  console.log("Loading New Game!");
   const [initialSudokuBoard, solvedSudokuBoard] = getSudoku();
+  localStorage.setItem(
+    "initialSudokuBoard",
+    JSON.stringify(initialSudokuBoard)
+  );
+  localStorage.setItem("solvedSudokuBoard", JSON.stringify(solvedSudokuBoard));
+  localStorage.setItem("lastSudokuBoard", JSON.stringify(initialSudokuBoard));
+  localStorage.setItem("noHints", JSON.stringify(MAX_HINTS));
 
-  const [board, setBoard] = useState(initialSudokuBoard);
+  return [initialSudokuBoard, solvedSudokuBoard, initialSudokuBoard, MAX_HINTS];
+}
+
+function getOldGame() {
+  const oldInitialBoard = localStorage.getItem("initialSudokuBoard");
+  const oldSolvedBoard = localStorage.getItem("solvedSudokuBoard");
+  const oldLastBoard = localStorage.getItem("lastSudokuBoard");
+  const noHints = localStorage.getItem("noHints");
+
+  if (oldInitialBoard && oldSolvedBoard && oldLastBoard) {
+    console.log("Loading Old Game!");
+    return [
+      JSON.parse(oldInitialBoard),
+      JSON.parse(oldSolvedBoard),
+      JSON.parse(oldLastBoard),
+      JSON.parse(noHints),
+    ];
+  }
+
+  return getNewGame();
+}
+
+export default function Game() {
+  let [initialSudokuBoard, solvedSudokuBoard, currBoard, noHints] = getOldGame();
+
+  const [board, setBoard] = useState(currBoard);
   const [won, setWon] = useState(false);
-  const [hints, setHints] = useState(5);
+  const [hints, setHints] = useState(noHints);
   const [hintUsed, setHintUsed] = useState(false);
 
+  function newGame() {
+    const [newInitialSudokuBoard, newSolvedSudokuBoard, currBoard, noHints] =
+      getNewGame();
+    setBoard(currBoard);
+    setHints(noHints);
+    setWon(false);
+    setHintUsed(false);
+    initialSudokuBoard = newInitialSudokuBoard;
+    solvedSudokuBoard = newSolvedSudokuBoard;
+  }
+
+  function restart() {
+    updateBoard(initialSudokuBoard);
+    setHints(MAX_HINTS);
+    localStorage.setItem("noHints", JSON.stringify(MAX_HINTS));
+    setWon(false);
+    setHintUsed(false);
+  }
+
   function updateBoard(board) {
-    
     if (isValidSudoku(board) && !hasNulls(board)) {
       setWon(true);
     }
-    
+    localStorage.setItem("lastSudokuBoard", JSON.stringify(board));
     setBoard(board);
-    setHintUsed(false)
+    setHintUsed(false);
   }
 
-  function updateHints(hint){
-    if(!hints){
-      console.log("No hints left")
-    }
-    else{
+  function updateHints() {
+    if (!hints) {
+      console.log("No hints left");
+    } else {
       setHintUsed(true);
-      invalidCells = getInvalidCellMatrix(board, solvedSudokuBoard)
-      setHints(hints-1)
-      setBoard(board)
-      console.log(invalidCells)
+      invalidCells = getInvalidCellMatrix(board, solvedSudokuBoard);
+
+      localStorage.setItem("noHints", String(hints - 1));
+      setHints(hints - 1);
+      setBoard(board);
     }
   }
 
-  if(won){
-    return(<p>won</p>)
-  }
-  else{
+  if (won) {
     return (
-          <div className="game">
-            <HintButton noOfHints={hints} setNoOfHints={updateHints}/>
-            <Board
-              board={board}
-              setBoard={updateBoard}
-              initialBoard={initialSudokuBoard}
-              invalidCellMatrix={hintUsed? invalidCells : Array.from({ length: 9 }, () => Array(9).fill(0))}
-            />
-          </div>
-          )
-          
-  }
-
-}
-
-function hasNulls(array) {
-  for (let i = 0; i < array.length; i++) {
-    for (let j = 0; j < array[i].length; j++) {
-      if (array[i][j] === null) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-var isValidSudoku = function (board) {
-  for (let i = 0; i < 9; i++) {
-    let row = new Set();
-    let col = new Set();
-
-    for (let j = 0; j < 9; j++) {
-      let curRow = board[i][j];
-      let currCol = board[j][i];
-
-      if (curRow !== null) {
-        if (row.has(curRow)) return false;
-        row.add(curRow);
-      }
-
-      if (currCol !== null) {
-        if (col.has(currCol)) return false;
-        col.add(currCol);
-      }
-    }
-  }
-  for (let i = 0; i < 9; i += 3) {
-    for (let j = 0; j < 9; j += 3) {
-      let box = new Set();
-
-      for (let x = 0; x < 3; x++) {
-        for (let y = 0; y < 3; y++) {
-          let currVal = board[i + x][j + y];
-
-          if (currVal !== null) {
-            if (box.has(currVal)) return false;
-            box.add(currVal);
+      <div>
+        <p>won</p>
+        <button onClick={newGame}>New Game!</button>
+      </div>
+    );
+  } else {
+    return (
+      <div className="game">
+        <HintButton noOfHints={hints} setNoOfHints={updateHints} />
+        <Board
+          board={board}
+          setBoard={updateBoard}
+          initialBoard={initialSudokuBoard}
+          invalidCellMatrix={
+            hintUsed
+              ? invalidCells
+              : Array.from({ length: 9 }, () => Array(9).fill(0))
           }
-        }
-      }
-    }
+        />
+        <button onClick={newGame}>New Game!</button>
+        <button onClick={restart}>Restart!</button>
+      </div>
+    );
   }
-
-  return true;
-};
-
-function getSudoku() {
-  let solvedSudokuBoard = [
-    [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    [1, 9, 8, 3, 4, 2, 5, 6, 7],
-    [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    [4, 2, 6, 8, 5, 3, 7, 9, 1],
-    [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    [3, 4, 5, 2, 8, 6, 1, 7, 9],
-  ];
-  let pSolvedSudokuBoard = [
-    [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    [1, 9, 8, 3, null, 2, 5, 6, 7],
-    [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    [4, 2, 6, 8, 5, 3, 7, 9, 1],
-    [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    [3, 4, 5, 2, 8, 6, 1, 7, 9],
-  ];
-
-  let initialSudokuBoard = [
-    [5, 3, null, null, 7, null, null, null, null],
-    [6, null, null, 1, 9, 5, null, null, null],
-    [null, 9, 8, null, null, null, null, 6, null],
-    [8, null, null, null, 6, null, null, null, 3],
-    [4, null, null, 8, null, 3, null, null, 1],
-    [7, null, null, null, 2, null, null, null, 6],
-    [null, 6, null, null, null, null, 2, 8, null],
-    [null, null, null, 4, 1, 9, null, null, 5],
-    [null, null, null, null, 8, null, null, 7, 9],
-  ];
-
-  return [initialSudokuBoard, solvedSudokuBoard];
-}
-
-function getInvalidCellMatrix(invalidSudoku, solvedSudoku) {
-  let invalidCell = Array.from({ length: 9 }, () => Array(9).fill(0));
-
-  for (let row = 0; row < 9; row++) {
-    for (let col = 0; col < 9; col++) {
-      if (
-        invalidSudoku[row][col] != null &&
-        invalidSudoku[row][col] != solvedSudoku[row][col]
-      ) {
-        invalidCell[row][col] = 1;
-      }
-    }
-  }
-  return invalidCell;
 }

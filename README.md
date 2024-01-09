@@ -56,12 +56,15 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 Our development roadmap includes the following upcoming features and improvements:
 
 - Add Hint Button ✅
+- Continue last game on reload ✅
+- Leaderboard for high scores.
 - Dynamic Board Generation
 - Difficulty levels for Sudoku puzzles.
 - Timer functionality for tracking solving time.
-- Leaderboard for high scores.
 - Mobile responsiveness for on-the-go gameplay.
 - Beautify everything
 
 
 __Happy Sudoku solving!__
+
+__Note__: This is my first React app, and I'm excited to continue learning and improving! If you have any suggestions or feedback, feel free to let me know.
