@@ -104,3 +104,19 @@ export function isValidSudoku(board) {
   return true;
 }
 
+export function getHint(currBoard, solvedBoard){
+
+    let hints = []
+
+    for(let row = 0; row<9; row++){
+        for(let col = 0; col<9; col++){
+
+            if(!currBoard[row][col] && currBoard[row][col] != solvedBoard[row][col]){
+                hints.push([row, col, solvedBoard[row][col]])
+            }
+        }
+    }
+    const randomIndex = Math.floor(Math.random() * hints.length);
+    
+    return hints.length?hints[randomIndex]:null
+}
