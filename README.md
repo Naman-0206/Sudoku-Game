@@ -9,7 +9,6 @@ Welcome to the Sudoku game project! This project is under development and aims t
 - [Installation](#installation)
 - [Usage](#usage)
 - [Roadmap](#roadmap)
-- [Contributing](#contributing)
 
 ## About
 
@@ -31,12 +30,12 @@ To get started with the Sudoku Game, follow the installation instructions below.
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/sudoku-game.git
+   git clone https://github.com/Naman-0206/Sudoku-Game.git
    ```
 2. Navigate to the project directory:
 
    ```bash
-   cd sudoku-game
+   cd Sudoku-Game
    ```
 3. Install dependencies:
 
