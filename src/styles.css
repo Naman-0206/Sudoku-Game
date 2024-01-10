@@ -83,22 +83,33 @@ body {
 .game {
   display: flex;
   flex-direction:column;
+  align-items: center;
 }
 
 .game-info {
   margin-left: 20px;
 }
 .sudoku-board {
+  border: 2px black solid;
+  /* overflow: visible; */
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
   gap: 0px; /* Gap between cells */
-  width: 300px; /* Adjust the width to fit your design */
+  width: fit-content; /* Adjust the width to fit your design */
 }
 
 .hint-button{
-  margin-bottom: 20px;
+  margin: 20px;
   /* margin-top: 20px; */
   height:min-content;
+  width: min-content;
+}
+
+
+.newgame{
+  width: min-content;
+}
+.restart{
   width: min-content;
 }

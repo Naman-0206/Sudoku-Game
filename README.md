@@ -57,8 +57,8 @@ Our development roadmap includes the following upcoming features and improvement
 
 - Add Hint Button ✅
 - Continue last game on reload ✅
+- Dynamic Board Generation ✅
 - Leaderboard for high scores.
-- Dynamic Board Generation
 - Difficulty levels for Sudoku puzzles.
 - Timer functionality for tracking solving time.
 - Mobile responsiveness for on-the-go gameplay.
