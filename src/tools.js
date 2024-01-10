@@ -107,7 +107,7 @@ function recFunc(board) {
   return false;
 }
 
-export function getSudoku(minRange = 60, maxRange = 70) {
+export function getSudoku(minRange = 70, maxRange = 80) {
   /*
     minRange: minimum no of elements to remove.
     */
