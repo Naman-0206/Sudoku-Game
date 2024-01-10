@@ -1,6 +1,6 @@
 import random
 from pprint import  pprint
-
+from collections import Counter
 
 def getSudoku():
     def is_possible(board, row, col, num):
@@ -108,3 +108,36 @@ def getSudoku():
     # print(coordinates, noOfRemoved)
     
     return sudoku, solvedSukoku
+
+
+
+
+def getInvalidCellMatrix(currBoard, initialBoard):
+    invalidCells = [[0]*9 for _ in range(9)]
+
+    # Check row
+    for r in range(9):
+        row_counter = Counter(currBoard[r])
+        for c in range(9):
+            if currBoard[r][c] is not None and row_counter[currBoard[r][c]] > 1 and currBoard[r][c] != initialBoard[r][c]:
+                invalidCells[r][c] = 1
+
+    # Check column
+    for c in range(9):
+        col_counter = Counter(currBoard[i][c] for i in range(9))
+        for r in range(9):
+            if currBoard[r][c] is not None and col_counter[currBoard[r][c]] > 1 and currBoard[r][c] != initialBoard[r][c]:
+                invalidCells[r][c] = 1
+
+    # Check small boxes
+    for i in range(0, 9, 3):
+        for j in range(0, 9, 3):
+            box_counter = Counter(currBoard[x][y] for x in range(i, i+3) for y in range(j, j+3))
+            for x in range(i, i+3):
+                for y in range(j, j+3):
+                    if currBoard[x][y] is not None and box_counter[currBoard[x][y]] > 1 and currBoard[x][y] != initialBoard[x][y]:
+                        invalidCells[x][y] = 1
+
+    return invalidCells
+
+
